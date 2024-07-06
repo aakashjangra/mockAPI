@@ -1,18 +1,26 @@
+import { randomUUID } from "crypto";
+
 const mongoose = require('mongoose');
 
-main().catch(err => console.log(err));
+mongoose.connect('mongodb://127.0.0.1:27017/mockAPI');
 
-async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/mockAPI');
-
-  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
-}
+console.log("db connection successful!");
 
 const userSchema = new mongoose.Schema({
-  username: {type: String, unique: true, required: true},
+  email: {type: String, unique: true, required: true},
   password: {type: String, required: true},
 });
 
-const userModel = mongoose.model("User", userSchema);
+const productSchema = new mongoose.Schema({
+  id: {type: String, default: randomUUID()},
+  name: {type: String, required: true},
+  description: {type: String},
+  price: {type: Number, required: true},
+  thumbnails: {type: [String]}, //will contain images
+  rating: {type: Number},
+})
 
-export {userModel};
+const userModel = mongoose.model("User", userSchema);
+const productModel = mongoose.model("Product", productSchema);
+
+export {userModel, productModel};
